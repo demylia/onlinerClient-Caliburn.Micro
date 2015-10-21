@@ -1,0 +1,63 @@
+﻿<Page
+    x:Class="OnlinerNews.DetailView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:OnlinerNews"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Page.BottomAppBar>
+
+        <CommandBar    RenderTransformOrigin="0.118,0.432">
+            <AppBarButton  Icon="View" Label="webBrowser" Click="AppBarButton_Click"/>
+            <!--<AppBarButton Label="BitmapIcon" Click="AppBarButton_Click">
+                <AppBarButton.Icon>
+                    <BitmapIcon UriSource="Assets/download.png" Height="40" VerticalAlignment="Top"/>
+                </AppBarButton.Icon>
+            </AppBarButton>-->
+        </CommandBar>
+    </Page.BottomAppBar>
+
+    <Grid x:Name="LayoutRoot">
+
+        <Grid.ChildrenTransitions>
+            <TransitionCollection>
+                <EntranceThemeTransition/>
+            </TransitionCollection>
+        </Grid.ChildrenTransitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Title Panel -->
+        <StackPanel Grid.Row="0" Margin="9,0,10,0.167">
+            <!--<TextBlock Text="{Binding News.Title, ElementName=page}" Margin="0,-6.5,0,26.5" Style="{ThemeResource HeaderTextBlockStyle}" CharacterSpacing="{ThemeResource PivotHeaderItemCharacterSpacing}"/>-->
+        </StackPanel>
+
+        <!--TODO: Content should be placed within the following grid-->
+        <Grid Grid.Row="1" x:Name="ContentRoot" Margin="10" >
+
+
+            <ScrollViewer Margin="0,10,0,0" >
+                <StackPanel >
+                    <TextBlock  Text="{Binding News.Title, ElementName=page}"
+                			TextWrapping="Wrap" x:Name="contentNews" 
+                			FontSize="20" 
+                		 />
+
+                    <Image Source="{Binding News.ImagePath, ElementName=page}" />
+                    <TextBlock  TextWrapping="Wrap" 
+                		Text="{Binding News.Content, ElementName=page}"
+                		FontSize="18"  />
+
+
+                </StackPanel>
+            </ScrollViewer>
+
+        </Grid>
+    </Grid>
+</Page>
