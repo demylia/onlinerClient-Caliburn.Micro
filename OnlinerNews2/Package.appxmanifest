@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest" xmlns:m3="http://schemas.microsoft.com/appx/2014/manifest" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest">
 
-  <Identity Name="37825739-f1ef-47c8-961c-501c46e9ae28"
+  <Identity Name="e613d000-45e7-4ce8-bb17-5d9ba5a35677"
             Publisher="CN=Dzmitry_Tsikhanau1"
             Version="1.0.0.0" />
 
-  <mp:PhoneIdentity PhoneProductId="37825739-f1ef-47c8-961c-501c46e9ae28" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+  <mp:PhoneIdentity PhoneProductId="e613d000-45e7-4ce8-bb17-5d9ba5a35677" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>OnlinerNews</DisplayName>
+    <DisplayName>OnlinerNews2</DisplayName>
     <PublisherDisplayName>Dzmitry_Tsikhanau1</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
@@ -25,12 +25,12 @@
   <Applications>
     <Application Id="App"
         Executable="$targetnametoken$.exe"
-        EntryPoint="OnlinerNews.App">
+        EntryPoint="OnlinerNews2.App">
         <m3:VisualElements
-            DisplayName="OnlinerNews"
+            DisplayName="OnlinerNews2"
             Square150x150Logo="Assets\Logo.png"
             Square44x44Logo="Assets\SmallLogo.png"
-            Description="OnlinerNews"
+            Description="OnlinerNews2"
             ForegroundText="light"
             BackgroundColor="transparent">
             <m3:DefaultTile Wide310x150Logo="Assets\WideLogo.png" Square71x71Logo="Assets\Square71x71Logo.png"/>

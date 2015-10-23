@@ -1,4 +1,7 @@
 ﻿using Caliburn.Micro;
+using OnlinerNews2.ViewModels;
+using OnlinerNews2.Views;
+using OnlinerServices;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -16,44 +19,42 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
-using OnlinerNews.ViewModels;
 
 // The Blank Application template is documented at http://go.microsoft.com/fwlink/?LinkId=391641
 
-namespace OnlinerNews
+namespace OnlinerNews2
 {
     public sealed partial class App : CaliburnApplication
     {
         private WinRTContainer container;
+        
 
         public App()
         {
             InitializeComponent();
+            Initialize();
         }
 
         protected override void Configure()
         {
             container = new WinRTContainer();
-
             container.RegisterWinRTServices();
+            
 
             container.PerRequest<MainViewModel>();
             container.PerRequest<DetailViewModel>();
-        }
 
-        protected override void PrepareViewFirst(Frame rootFrame)
-        {
-            container.RegisterNavigationService(rootFrame);
-        }
+            container.Singleton<IDataManager, DataManager>();
 
-        protected override void OnLaunched(LaunchActivatedEventArgs args)
-        {
-            DisplayRootView<MainView>();
-        }
+            MessageBinder.SpecialValues.Add("$clickeditem", c => ((ItemClickEventArgs)c.EventArgs).ClickedItem);
 
+        }
         protected override object GetInstance(Type service, string key)
         {
-            return container.GetInstance(service, key);
+            var instance = container.GetInstance(service, key);
+            if (instance != null)
+                return instance;
+            throw new Exception("Could not locate any instances.");
         }
 
         protected override IEnumerable<object> GetAllInstances(Type service)
@@ -61,9 +62,18 @@ namespace OnlinerNews
             return container.GetAllInstances(service);
         }
 
+
         protected override void BuildUp(object instance)
         {
             container.BuildUp(instance);
+        }
+        protected override void PrepareViewFirst(Frame rootFrame)
+        {
+            container.RegisterNavigationService(rootFrame);
+        }
+        protected override void OnLaunched(LaunchActivatedEventArgs args)
+        {
+            DisplayRootView<MainView>();
         }
     }
 }
