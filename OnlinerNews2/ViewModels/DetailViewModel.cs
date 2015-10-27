@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OnlinerNews2.ViewModels
@@ -84,5 +85,10 @@ namespace OnlinerNews2.ViewModels
         {
             Content = await datamanager.GetContentByLinkAsync(Link);
         }
+        public async void OpenInBrowser()
+        {
+            await Windows.System.Launcher.LaunchUriAsync(new Uri(Link, UriKind.Absolute));
+        }
+        
     }
 }
