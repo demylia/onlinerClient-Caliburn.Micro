@@ -42,9 +42,8 @@ namespace OnlinerServices
         }
         public async Task<string> GetContentByLinkAsync(string link)
         {
-            
-           var rss = await GetOnlinerRSSAsync(link);
-            
+            var rss = await GetOnlinerRSSAsync(link);
+
             HtmlParser parser = new HtmlParser();
             string selector = "div.b-posts-1-item__text";
             var article = await Task.Run(() => parser.Parse(rss).QuerySelector(selector).TextContent);
@@ -52,18 +51,24 @@ namespace OnlinerServices
 
             return article;
         }
-
+       
         private async Task<string> GetOnlinerRSSAsync(string adress)
         {
+            HttpClient client = new HttpClient();
           
-            using (HttpClient client = new HttpClient())
-            {
-                var rss = await client.GetStringAsync(new Uri(adress));
-                // await Task.Delay(4000);// just for test
-                return rss;
-            }
+            var rss =  await client.GetStringAsync(new Uri(adress));
+
+            // await Task.Delay(4000);// just for test
+            return  rss;
         }
+
         
+        //public IEnumerable<NewsItem> GetNews(int numberOfpage)
+        //{
+
+        //    return GetNews(adress + "/page/" + numberOfpage.ToString());
+        //}
+
        
     }
 }
