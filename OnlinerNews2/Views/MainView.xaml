@@ -10,14 +10,19 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <!--<Page.BottomAppBar>
-        <CommandBar >
-            <AppBarButton Icon="Back" Label="back" Click="BackButton_Click"/>
-            <AppBarButton Icon="Forward" Label="forward" Click="ForwardButton_Click"/>
-        </CommandBar>
-    </Page.BottomAppBar>-->
 
-    <Grid><!--x:Name="GoToDetail"-->
+    <Page.BottomAppBar>
+        <CommandBar Height="26" >
+
+            <!--<AppBarButton Icon="Back" Label="back" Click="BackButton_Click"/>
+            <AppBarButton Icon="Forward" Label="forward" Click="ForwardButton_Click"/>-->
+            <AppBarButton Icon="Refresh" Label="search" x:Name="RefreshNews"/>
+            <AppBarButton Icon="Find" Label="search" x:Name="Search"/>
+        </CommandBar>
+    </Page.BottomAppBar>
+
+    <Grid>
+        <!--x:Name="GoToDetail"-->
         <!--x:Name="listbox1" SelectionChanged="listbox1_SelectionChanged"-->
         <ListView   FontSize="26" ItemsSource="{Binding News}"
                  SelectionMode="Single" 
@@ -39,8 +44,10 @@
             </ListView.ItemTemplate>
 
         </ListView>
-        <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="95,24,0,0" TextWrapping="Wrap" Text="TechNews" FontSize="30"
-                   VerticalAlignment="Top" Height="29" Width="189"/>
+        <TextBlock x:Name="NameOfSection" HorizontalAlignment="Left" Margin="10,24,0,0" TextWrapping="Wrap" Text="TechNews" FontSize="30"
+                   VerticalAlignment="Top" Height="29" Width="142"/>
+        <TextBox PlaceholderText="Search" x:Name="TextSearch" HorizontalAlignment="Left" Margin="224,24,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="29" Width="166"/>
+        <TextBlock Text="{Binding News.Count}" HorizontalAlignment="Left" Margin="157,24,0,0"  FontSize="30"  VerticalAlignment="Top" Width="47" Height="29"/>
 
     </Grid>
 </Page>
