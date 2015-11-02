@@ -12,7 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.Storage;
 
-namespace OnlinerNews2.ViewModels
+namespace OnlinerServices.ViewModels
 {
     public class MainViewModel : Screen
     {
@@ -63,12 +63,7 @@ namespace OnlinerNews2.ViewModels
            
            
         }
-       private async void GetNews()
-        {
-            string adress = "http://tech.onliner.by/feed";
-            News = new ObservableCollection<NewsItem>(await _dataManager.GetNewsAsync(adress));
-
-        }
+      
         public void GoToDetail(NewsItem item)
         {
             _navigationService.NavigateToViewModel<DetailViewModel>(item);
@@ -92,7 +87,13 @@ namespace OnlinerNews2.ViewModels
         {
             GetNews();
         }
-        
+         private async void GetNews()
+        {
+           // string adress = "http://tech.onliner.by/feed";
+          //  News = new ObservableCollection<NewsItem>(await _dataManager.GetNewsAsync(adress));
+            News = new ObservableCollection<NewsItem>(await _dataManager.GetNewsDeserializeAsync());
+
+        }
         private async Task WriteDataAsync()
         {
             var dcs = new DataContractSerializer(typeof(List<NewsItem>));

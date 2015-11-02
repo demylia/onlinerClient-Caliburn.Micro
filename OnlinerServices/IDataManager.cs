@@ -11,7 +11,7 @@ namespace OnlinerServices
 {
     public interface IDataManager
     {
-        
+        Task<IEnumerable<NewsItem>> GetNewsDeserializeAsync();
         Task<IEnumerable<NewsItem>> GetNewsAsync(string adress);
         Task<string> GetContentByLinkAsync(string link);
     }

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -13,6 +14,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
+using Windows.Data.Xml.Dom;
 using Windows.Web.Http;
 
 namespace OnlinerServices
@@ -21,14 +23,32 @@ namespace OnlinerServices
     {
 
         private string adress = "http://tech.onliner.by/feed";
-       
 
+        public async Task<IEnumerable<NewsItem>> GetNewsDeserializeAsync()
+        {
+
+            var feed = await GetOnlinerRSSAsync(adress);
+
+            var objectText = XmlReader.Create(new StringReader(feed));
+            XmlSerializer mySerializer = new XmlSerializer(typeof(rss));
+            var rss = (rss)mySerializer.Deserialize(objectText);
+
+            var news = rss.channel.item.Select(s => new NewsItem()
+                                                 {
+                                                    Title = s.title,
+                                                    Link = s.link,
+                                                    ImagePath = s.thumbnail.url
+                                                 });
+
+            return news;
+        }
         public async Task<IEnumerable<NewsItem>> GetNewsAsync(string adress = "http://tech.onliner.by/feed")
         {
 
             var rss = await GetOnlinerRSSAsync(adress);
             
             XElement xml = XElement.Parse(rss);
+          
             XNamespace media = "http://search.yahoo.com/mrss/";
             var news = xml.Element("channel").Elements("item").
                                                          Select(s => new NewsItem()
