@@ -1,6 +1,6 @@
 ﻿using Caliburn.Micro;
-using OnlinerNews2.ViewModels;
-using OnlinerNews2.Views;
+using OnlinerServices.ViewModels;
+using OnlinerServices.Views;
 using OnlinerServices;
 using System;
 using System.Collections.Generic;
@@ -22,7 +22,7 @@ using Windows.UI.Xaml.Navigation;
 
 // The Blank Application template is documented at http://go.microsoft.com/fwlink/?LinkId=391641
 
-namespace OnlinerNews2
+namespace OnlinerServices
 {
     public sealed partial class App : CaliburnApplication
     {
@@ -44,7 +44,7 @@ namespace OnlinerNews2
             container.PerRequest<MainViewModel>();
             container.PerRequest<DetailViewModel>();
 
-            container.Singleton<IDataManager, DataManager>();
+            container.Singleton<IDataManager, DataManagerOnlinerTech>();
 
             MessageBinder.SpecialValues.Add("$clickeditem", c => ((ItemClickEventArgs)c.EventArgs).ClickedItem);
 

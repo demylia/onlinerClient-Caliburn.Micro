@@ -8,18 +8,14 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace OnlinerNews2.ViewModels
+namespace OnlinerServices.ViewModels
 {
    public class DetailViewModel: Screen
     {
         private readonly INavigationService navigationService;
         private IDataManager datamanager;
-        
-        string title;
-        string link;
-        string imagePath;
-        string content;
-
+        private string content;
+		
         public NewsItem Parameter { get; set; }
         public NewsItem NewsItem { get; set; }
 
@@ -29,66 +25,29 @@ namespace OnlinerNews2.ViewModels
             this.navigationService = navigationService;
         }
 
-        public string Title
+		public string Content
+		{
+			get { return content; }
+			set
+			{
+				content = value;
+				NotifyOfPropertyChange(() => Content);
+			}
+		}
+
+		protected override void OnActivate()
         {
-            get { return title; }
-            set
-            {
-                title = value;
-                NotifyOfPropertyChange(() => Title);
-            }
+		    GetContentOfNewsAsync();
         }
 
-        public string Link
-        {
-            get { return link; }
-            set
-            {
-                link = value;
-                NotifyOfPropertyChange(() => Link);
-            }
-        }
-
-        public string ImagePath
-        {
-            get { return imagePath; }
-            set
-            {
-                imagePath = value;
-                NotifyOfPropertyChange(() => ImagePath);
-            }
-        }
-
-        public string Content
-        {
-            get { return content; }
-            set
-            {
-                content = value;
-                NotifyOfPropertyChange(() => Content);
-            }
-        }
-
-
-        /// <summary>
-        /// 
-        /// </summary>
-        protected override void OnActivate()
-        {
-            Title = Parameter.Title;
-            ImagePath = Parameter.ImagePath;
-            Link = Parameter.Link;
-            GetContentOfNewsAsync();
-        }
-
-        private async void GetContentOfNewsAsync()
-        {
-            Content = await datamanager.GetContentByLinkAsync(Link);
-        }
         public async void OpenInBrowser()
         {
-            await Windows.System.Launcher.LaunchUriAsync(new Uri(Link, UriKind.Absolute));
+            await Windows.System.Launcher.LaunchUriAsync(new Uri(Parameter.Link, UriKind.Absolute));
         }
-        
+
+         private async void GetContentOfNewsAsync()
+        {
+            Content = await datamanager.GetContentByLinkAsync(Parameter.Link);
+        }
     }
 }

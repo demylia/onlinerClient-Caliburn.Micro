@@ -16,22 +16,19 @@ namespace OnlinerServices.ViewModels
 {
     public class MainViewModel : Screen
     {
-        private readonly INavigationService _navigationService;
-      
-        private ObservableCollection<NewsItem> news;
-        private IDataManager _dataManager;
-        private string textSearch;
+        private readonly INavigationService navigationService;
+        private IDataManager dataManager;
+		private ObservableCollection<NewsItem> news;
+		private string textSearch;
 
         public MainViewModel(INavigationService navigationService, IDataManager dataManager)
         {
-            
-            this._dataManager = dataManager;
-            this._navigationService = navigationService;
-            
-        }
+            this.dataManager = dataManager;
+            this.navigationService = navigationService;
+         }
 
-        //Observed Properties
-        public ObservableCollection<NewsItem> News
+		#region Observed Properties
+		public ObservableCollection<NewsItem> News
         {
             get { return news; }
             set
@@ -50,24 +47,25 @@ namespace OnlinerServices.ViewModels
                 NotifyOfPropertyChange(() => TextSearch);
             }
         }
+		#endregion
 
-        //Methods
-        protected override async void OnActivate()
-        {
-            News = await ReadDataAsync();
-            if (News == null)
-            {
-                GetNews();
-                await WriteDataAsync();
-            }
-           
-           
-        }
-      
-        public void GoToDetail(NewsItem item)
-        {
-            _navigationService.NavigateToViewModel<DetailViewModel>(item);
-        }
+		#region Navigation
+		public void GoToDetail(NewsItem item)
+		{
+			navigationService.NavigateToViewModel<DetailViewModel>(item);
+		}
+		#endregion
+
+		#region Displaying and searching of  the news
+		protected override async void OnActivate()
+		{
+			News = await ReadDataAsync();
+			if (News == null)
+			{
+				GetNews();
+				await WriteDataAsync();
+			}
+		}
 
         public async void Search()
         {
@@ -79,22 +77,22 @@ namespace OnlinerServices.ViewModels
             {
                 var res = await ReadDataAsync();
                 News = new ObservableCollection<NewsItem>(res.Where(s => s.Title.IndexOf(TextSearch,StringComparison.OrdinalIgnoreCase) >= 0));
-              
             }
-   
         }
+
         public void RefreshNews()
         {
             GetNews();
         }
-         private async void GetNews()
-        {
-           // string adress = "http://tech.onliner.by/feed";
-          //  News = new ObservableCollection<NewsItem>(await _dataManager.GetNewsAsync(adress));
-            News = new ObservableCollection<NewsItem>(await _dataManager.GetNewsDeserializeAsync());
 
-        }
-        private async Task WriteDataAsync()
+		private async void GetNews()
+		{
+			News = new ObservableCollection<NewsItem>(await dataManager.GetNewsAsync());
+		}
+		#endregion
+
+		#region Write/Read a data on the disk
+		private async Task WriteDataAsync()
         {
             var dcs = new DataContractSerializer(typeof(List<NewsItem>));
 
@@ -102,8 +100,8 @@ namespace OnlinerServices.ViewModels
             {
                 dcs.WriteObject(stream, News);
             }
-
         }
+
         private async Task<ObservableCollection<NewsItem>> ReadDataAsync()
         {
             
@@ -111,9 +109,7 @@ namespace OnlinerServices.ViewModels
             DataContractSerializer dcs = new DataContractSerializer(typeof(List<NewsItem>));
 
            return new ObservableCollection<NewsItem>((IEnumerable<NewsItem>)dcs.ReadObject(myStream));
-
         }
-
-       
-    }
+		#endregion
+	}
 }

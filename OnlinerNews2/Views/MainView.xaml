@@ -1,53 +1,77 @@
 ﻿<Page
-    x:Class="OnlinerNews2.Views.MainView"
+    x:Class="OnlinerServices.Views.MainView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:OnlinerNews2.Views"
+    xmlns:local="using:OnlinerServices.Views"
     xmlns:micro="using:Caliburn.Micro"
-    xmlns:viewModels="using:OnlinerNews2.ViewModels"
+    xmlns:viewModels="using:OnlinerServices.ViewModels"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-
+    
 
     <Page.BottomAppBar>
         <CommandBar Height="26" >
-
             <!--<AppBarButton Icon="Back" Label="back" Click="BackButton_Click"/>
             <AppBarButton Icon="Forward" Label="forward" Click="ForwardButton_Click"/>-->
-            <AppBarButton Icon="Refresh" Label="search" x:Name="RefreshNews"/>
+            <AppBarButton Icon="Refresh" Label="refresh" x:Name="RefreshNews"/>
             <AppBarButton Icon="Find" Label="search" x:Name="Search"/>
         </CommandBar>
     </Page.BottomAppBar>
 
     <Grid>
-        <!--x:Name="GoToDetail"-->
-        <!--x:Name="listbox1" SelectionChanged="listbox1_SelectionChanged"-->
-        <ListView   FontSize="26" ItemsSource="{Binding News}"
-                 SelectionMode="Single" 
-                 Margin="0,76,0,0"
-                    
-                    IsItemClickEnabled="True"
-                  micro:Message.Attach="[Event ItemClick] = [Action GoToDetail($clickeditem)]"
-                  >
-
-            <ListView.ItemTemplate  >
+        <ListView
+           FontSize="26"
+           ItemsSource="{Binding News}"
+           SelectionMode="Single" 
+           Margin="0,76,0,0"
+           IsItemClickEnabled="True"
+           micro:Message.Attach="[Event ItemClick] = [Action GoToDetail($clickeditem)]"
+           >
+           <ListView.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel   Orientation="Horizontal">
-
+                    <StackPanel  Orientation="Horizontal">
                         <Image Source="{Binding ImagePath}" Width="100" Height="100" />
-                        <TextBlock Text="{Binding Title}" TextWrapping="Wrap" FontSize="20" Margin="10" Width="302" IsTapEnabled="True"  />
+                        <TextBlock 
+                             Style="{StaticResource MyTextBlockStyle}"
+                             Text="{Binding Title}"
+                             TextWrapping="Wrap"
+                             FontSize="20"
+                             Margin="10"
+                             Width="302"
+                             IsTapEnabled="True"  
+                             />
                     </StackPanel>
-
                 </DataTemplate>
             </ListView.ItemTemplate>
-
         </ListView>
-        <TextBlock x:Name="NameOfSection" HorizontalAlignment="Left" Margin="10,24,0,0" TextWrapping="Wrap" Text="TechNews" FontSize="30"
-                   VerticalAlignment="Top" Height="29" Width="142"/>
-        <TextBox PlaceholderText="Search" x:Name="TextSearch" HorizontalAlignment="Left" Margin="224,24,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="29" Width="166"/>
-        <TextBlock Text="{Binding News.Count}" HorizontalAlignment="Left" Margin="157,24,0,0"  FontSize="30"  VerticalAlignment="Top" Width="47" Height="29"/>
-
+        <TextBlock
+             x:Name="NameOfSection"
+             Style="{StaticResource MyTextBlockStyle}"
+             Margin="10,24,0,0"
+             TextWrapping="Wrap"
+             Text="TechNews"
+             Height="29"
+             Width="142"
+             />
+        <TextBox
+            x:Name="TextSearch"
+            PlaceholderText="Search" 
+            HorizontalAlignment="Left"
+            Margin="224,24,0,0"
+            TextWrapping="Wrap" 
+            VerticalAlignment="Top" 
+            Height="29"
+            Width="166"
+            />
+        <TextBlock 
+            Text="{Binding News.Count}"
+            Style="{StaticResource MyTextBlockStyle}"
+            Margin="157,24,0,0" 
+            VerticalAlignment="Top"
+            Width="47"
+            Height="29"
+            />
     </Grid>
 </Page>
