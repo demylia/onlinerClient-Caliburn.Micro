@@ -80,10 +80,11 @@ namespace OnlinerServices.ViewModels
             }
         }
 
-        public void RefreshNews()
+        public async void RefreshNews()
         {
             GetNews();
-        }
+			await WriteDataAsync();
+		}
 
 		private async void GetNews()
 		{
