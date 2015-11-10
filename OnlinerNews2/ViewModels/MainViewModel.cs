@@ -4,30 +4,31 @@ using OnlinerServices;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.Storage;
 
-namespace OnlinerNews2.ViewModels
+namespace OnlinerServices.ViewModels
 {
     public class MainViewModel : Screen
     {
-        private readonly INavigationService _navigationService;
-        private ObservableCollection<NewsItem> news;
-        private IDataManager _dataManager;
+        private readonly INavigationService navigationService;
+        private IDataManager dataManager;
+		private ObservableCollection<NewsItem> news;
+		private string textSearch;
 
-       
         public MainViewModel(INavigationService navigationService, IDataManager dataManager)
         {
-            
-            this._dataManager = dataManager;
-            this._navigationService = navigationService;
-            
-        }
+            this.dataManager = dataManager;
+            this.navigationService = navigationService;
+         }
 
-        //Observed Properties
-        public ObservableCollection<NewsItem> News
+		#region Observed Properties
+		public ObservableCollection<NewsItem> News
         {
             get { return news; }
             set
@@ -37,19 +38,79 @@ namespace OnlinerNews2.ViewModels
             }
         }
 
-        //Methods
-        public void GoToDetail(NewsItem item)
+        public string TextSearch
         {
-            _navigationService.NavigateToViewModel<DetailViewModel>(item);
-       
+            get { return textSearch; }
+            set
+            {
+                textSearch = value;
+                NotifyOfPropertyChange(() => TextSearch);
+            }
+        }
+		#endregion
+
+		#region Navigation
+		public void GoToDetail(NewsItem item)
+		{
+			navigationService.NavigateToViewModel<DetailViewModel>(item);
+		}
+		#endregion
+
+		#region Displaying and searching of the news
+		protected override async void OnActivate()
+		{
+			News = await ReadDataAsync();
+			if (News == null)
+			{
+				GetNews();
+				await WriteDataAsync();
+			}
+		}
+
+        public async void Search()
+        {
+            if (string.IsNullOrEmpty(TextSearch))
+            {
+              News = await  ReadDataAsync();
+            }
+            else
+            {
+                var res = await ReadDataAsync();
+                News = new ObservableCollection<NewsItem>(res.Where(s => s.Title.IndexOf(TextSearch,StringComparison.OrdinalIgnoreCase) >= 0));
+            }
         }
 
-        protected override async void OnActivate()
+        public async void RefreshNews()
         {
-            string adress = "http://tech.onliner.by/feed";
-           
-            News = new ObservableCollection<NewsItem>(await _dataManager.GetNewsAsync(adress));
+            GetNews();
+			await WriteDataAsync();
+		}
+
+		private async void GetNews()
+		{
+			News = new ObservableCollection<NewsItem>(await dataManager.GetNewsDeserializeAsync());
+		}
+		#endregion
+
+		#region Write/Read a data on the disk
+		private async Task WriteDataAsync()
+        {
+            var dcs = new DataContractSerializer(typeof(List<NewsItem>));
+
+            using (var stream = await ApplicationData.Current.LocalFolder.OpenStreamForWriteAsync("news.dat", CreationCollisionOption.ReplaceExisting))
+            {
+                dcs.WriteObject(stream, News);
+            }
         }
-        
-    }
+
+        private async Task<ObservableCollection<NewsItem>> ReadDataAsync()
+        {
+            
+            var myStream = await ApplicationData.Current.LocalFolder.OpenStreamForReadAsync("news.dat");
+            DataContractSerializer dcs = new DataContractSerializer(typeof(List<NewsItem>));
+
+           return new ObservableCollection<NewsItem>((IEnumerable<NewsItem>)dcs.ReadObject(myStream));
+        }
+		#endregion
+	}
 }

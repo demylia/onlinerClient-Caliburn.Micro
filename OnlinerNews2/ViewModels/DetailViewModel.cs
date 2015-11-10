@@ -5,21 +5,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace OnlinerNews2.ViewModels
+namespace OnlinerServices.ViewModels
 {
    public class DetailViewModel: Screen
     {
         private readonly INavigationService navigationService;
         private IDataManager datamanager;
-        
-        string title;
-        string link;
-        string imagePath;
-        string content;
-
+        private string content;
+		
         public NewsItem Parameter { get; set; }
         public NewsItem NewsItem { get; set; }
 
@@ -29,66 +26,43 @@ namespace OnlinerNews2.ViewModels
             this.navigationService = navigationService;
         }
 
-        public string Title
+		#region Observed Properties
+		public string Content
+		{
+			get { return content; }
+			set
+			{
+				content = value; 
+				NotifyOfPropertyChange(() => Content);
+			}
+		}
+		#endregion
+
+		#region Lifecycle
+		protected override void OnActivate()
         {
-            get { return title; }
-            set
-            {
-                title = value;
-                NotifyOfPropertyChange(() => Title);
-            }
+			Content = Parameter.Description;
+		}
+		#endregion
+
+		#region Watching of an article
+
+		public async void OpenInBrowser()
+        {
+            await Windows.System.Launcher.LaunchUriAsync(new Uri(Parameter.Link, UriKind.Absolute));
         }
 
-        public string Link
-        {
-            get { return link; }
-            set
-            {
-                link = value;
-                NotifyOfPropertyChange(() => Link);
-            }
-        }
+		public void LoadFullText()
+		{
+			GetContentOfNewsAsync();
+		}
 
-        public string ImagePath
+		 private async void GetContentOfNewsAsync()
         {
-            get { return imagePath; }
-            set
-            {
-                imagePath = value;
-                NotifyOfPropertyChange(() => ImagePath);
-            }
-        }
+			Content = await datamanager.GetContentByLinkAsync(Parameter.Link);
+			
+		}
+		#endregion
 
-        public string Content
-        {
-            get { return content; }
-            set
-            {
-                content = value;
-                NotifyOfPropertyChange(() => Content);
-            }
-        }
-
-
-        /// <summary>
-        /// 
-        /// </summary>
-        protected override void OnActivate()
-        {
-            Title = Parameter.Title;
-            ImagePath = Parameter.ImagePath;
-            Link = Parameter.Link;
-            GetContentOfNewsAsync();
-        }
-
-        private async void GetContentOfNewsAsync()
-        {
-            Content = await datamanager.GetContentByLinkAsync(Link);
-        }
-        public async void OpenInBrowser()
-        {
-            await Windows.System.Launcher.LaunchUriAsync(new Uri(Link, UriKind.Absolute));
-        }
-        
-    }
+	}
 }
