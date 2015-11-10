@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -25,29 +26,43 @@ namespace OnlinerServices.ViewModels
             this.navigationService = navigationService;
         }
 
+		#region Observed Properties
 		public string Content
 		{
 			get { return content; }
 			set
 			{
-				content = value;
+				content = value; 
 				NotifyOfPropertyChange(() => Content);
 			}
 		}
+		#endregion
 
+		#region Lifecycle
 		protected override void OnActivate()
         {
-		    GetContentOfNewsAsync();
-        }
+			Content = Parameter.Description;
+		}
+		#endregion
 
-        public async void OpenInBrowser()
+		#region Watching of an article
+
+		public async void OpenInBrowser()
         {
             await Windows.System.Launcher.LaunchUriAsync(new Uri(Parameter.Link, UriKind.Absolute));
         }
 
-         private async void GetContentOfNewsAsync()
+		public void LoadFullText()
+		{
+			GetContentOfNewsAsync();
+		}
+
+		 private async void GetContentOfNewsAsync()
         {
-            Content = await datamanager.GetContentByLinkAsync(Parameter.Link);
-        }
-    }
+			Content = await datamanager.GetContentByLinkAsync(Parameter.Link);
+			
+		}
+		#endregion
+
+	}
 }

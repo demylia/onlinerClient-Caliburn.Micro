@@ -56,7 +56,7 @@ namespace OnlinerServices.ViewModels
 		}
 		#endregion
 
-		#region Displaying and searching of  the news
+		#region Displaying and searching of the news
 		protected override async void OnActivate()
 		{
 			News = await ReadDataAsync();
@@ -88,7 +88,7 @@ namespace OnlinerServices.ViewModels
 
 		private async void GetNews()
 		{
-			News = new ObservableCollection<NewsItem>(await dataManager.GetNewsAsync());
+			News = new ObservableCollection<NewsItem>(await dataManager.GetNewsDeserializeAsync());
 		}
 		#endregion
 

@@ -11,7 +11,8 @@
 
     <Page.BottomAppBar>
         <CommandBar    RenderTransformOrigin="0.118,0.432">
-            <AppBarButton  Icon="View" Label="webBrowser" x:Name="OpenInBrowser" />
+            <AppBarButton  Icon="Globe" Label="webBrowser" x:Name="OpenInBrowser" />
+            <AppBarButton  Icon="View" Label="fullText" x:Name="LoadFullText"/>
             <!--<AppBarButton Label="BitmapIcon" Click="AppBarButton_Click">
                 <AppBarButton.Icon>
                     <BitmapIcon UriSource="Assets/download.png" Height="40" VerticalAlignment="Top"/>

@@ -11,7 +11,7 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <Page.Resources>
-        <valueconverter:CountNewsToStringConverter x:Key="CounNewsToStringConverter" />
+        <valueconverter:CountNewsToStringConverter x:Key="CountNewsToStringConverter" />
     </Page.Resources>
 
     <Page.BottomAppBar>
@@ -69,7 +69,7 @@
             Width="166"
             />
         <TextBlock 
-            Text="{Binding News.Count, Converter={StaticResource CounNewsToStringConverter}}"
+            Text="{Binding News.Count, Converter={StaticResource CountNewsToStringConverter}}"
             Style="{StaticResource MyTextBlockStyle}"
             FontSize="15"
             Margin="10,53,0,0" 
