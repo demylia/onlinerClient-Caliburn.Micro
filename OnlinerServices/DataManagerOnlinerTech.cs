@@ -38,7 +38,8 @@ namespace OnlinerServices
 													Title = Regex.Replace(s.title,"&nbsp;(.+)?","",RegexOptions.Multiline),
 													Link = s.link,
 													ImagePath = s.thumbnail.url,
-													Description = Regex.Replace(s.description, "<.+?>", "", RegexOptions.Multiline)
+													Description = Regex.Replace(s.description, "<.+?>", "", RegexOptions.Multiline),
+													Date = Regex.Replace(s.pubDate, @"\+.+", ""),
 												});
 
             return news;
