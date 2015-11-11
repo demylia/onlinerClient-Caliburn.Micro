@@ -21,12 +21,12 @@ namespace OnlinerServices.ViewModels
         private IDataManager dataManager;
 		private IWriteReadData locDataManager;
 		private ObservableCollection<NewsItem> news;
-		private string textSearch;
 		private IEnumerable<NewsItem> cashe;
+		private string textSearch;
 		private bool refresh = true;
+		private int progress;
 
-
-        public MainViewModel(INavigationService navigationService, IDataManager dataManager, IWriteReadData localManager)
+		public MainViewModel(INavigationService navigationService, IDataManager dataManager, IWriteReadData localManager)
         {
             this.dataManager = dataManager;
             this.navigationService = navigationService;
@@ -44,15 +44,6 @@ namespace OnlinerServices.ViewModels
 			}
         }
 
-		private bool Refresh
-		{
-			set
-			{
-				refresh = value;
-				NotifyOfPropertyChange(() => CanRefreshNews);
-			}
-		}
-
 		public string TextSearch
         {
             get { return textSearch; }
@@ -62,6 +53,25 @@ namespace OnlinerServices.ViewModels
                 NotifyOfPropertyChange(() => TextSearch);
             }
         }
+
+		public int ProgressBar
+		{
+			get { return progress; }
+			set
+			{
+				progress = value;
+				NotifyOfPropertyChange(() => ProgressBar);
+			}
+		}
+
+		private bool Refresh
+		{
+			set
+			{
+				refresh = value;
+				NotifyOfPropertyChange(() => CanRefreshNews);
+			}
+		}
 		#endregion
 
 		#region Navigation
@@ -74,8 +84,9 @@ namespace OnlinerServices.ViewModels
 		#region Displaying and searching of the news
 		protected override async void OnActivate()
 		{
+			
 			News = await ReadDataAsync();
-			if (News == null)
+			if (News.Count == 0)
 				RefreshNews();
 		}
 
@@ -103,6 +114,7 @@ namespace OnlinerServices.ViewModels
 
 		private async Task GetNews()
 		{
+
 			cashe = await dataManager.GetNewsDeserializeAsync();
 			if (News == null)
 				News = new ObservableCollection<NewsItem>(cashe);

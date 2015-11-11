@@ -36,7 +36,7 @@ namespace OnlinerNews2.Infrastructure
 			}
 			catch (FileNotFoundException)
 			{
-				return null;
+				return new ObservableCollection<NewsItem>();
 			}
 
 		}

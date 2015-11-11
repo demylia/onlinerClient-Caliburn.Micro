@@ -24,6 +24,7 @@ namespace OnlinerServices.Views
     {
         public MainView()
         {
+			
             this.InitializeComponent();
         }
 
