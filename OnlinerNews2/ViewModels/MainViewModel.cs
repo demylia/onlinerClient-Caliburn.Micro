@@ -1,5 +1,6 @@
 ﻿using Caliburn.Micro;
 using ModelPortable;
+using OnlinerNews2.Infrastructure;
 using OnlinerServices;
 using System;
 using System.Collections.Generic;
@@ -18,13 +19,18 @@ namespace OnlinerServices.ViewModels
     {
         private readonly INavigationService navigationService;
         private IDataManager dataManager;
+		private IWriteReadData locDataManager;
 		private ObservableCollection<NewsItem> news;
 		private string textSearch;
+		private IEnumerable<NewsItem> cashe;
+		private bool refresh = true;
 
-        public MainViewModel(INavigationService navigationService, IDataManager dataManager)
+
+        public MainViewModel(INavigationService navigationService, IDataManager dataManager, IWriteReadData localManager)
         {
             this.dataManager = dataManager;
             this.navigationService = navigationService;
+			this.locDataManager = localManager;
          }
 
 		#region Observed Properties
@@ -35,10 +41,19 @@ namespace OnlinerServices.ViewModels
             {
                 news = value;
                 NotifyOfPropertyChange(() => News);
-            }
+			}
         }
 
-        public string TextSearch
+		private bool Refresh
+		{
+			set
+			{
+				refresh = value;
+				NotifyOfPropertyChange(() => CanRefreshNews);
+			}
+		}
+
+		public string TextSearch
         {
             get { return textSearch; }
             set
@@ -61,56 +76,60 @@ namespace OnlinerServices.ViewModels
 		{
 			News = await ReadDataAsync();
 			if (News == null)
-			{
-				GetNews();
-				await WriteDataAsync();
-			}
+				RefreshNews();
 		}
 
-        public async void Search()
+        public  void Search()
         {
-            if (string.IsNullOrEmpty(TextSearch))
-            {
-              News = await  ReadDataAsync();
-            }
-            else
-            {
-                var res = await ReadDataAsync();
-                News = new ObservableCollection<NewsItem>(res.Where(s => s.Title.IndexOf(TextSearch,StringComparison.OrdinalIgnoreCase) >= 0));
-            }
+			if (string.IsNullOrEmpty(TextSearch))
+				AddingData(cashe);
+			else
+			{
+				var res = cashe.Where(s => s.Title.IndexOf(TextSearch, StringComparison.OrdinalIgnoreCase) >= 0);
+				AddingData(res);
+			}
         }
-
+		public bool CanRefreshNews
+		{
+			get { return refresh; }
+		}
         public async void RefreshNews()
         {
-            GetNews();
+			Refresh = false;
+            await GetNews();
 			await WriteDataAsync();
+			Refresh = true;
 		}
 
-		private async void GetNews()
+		private async Task GetNews()
 		{
-			News = new ObservableCollection<NewsItem>(await dataManager.GetNewsDeserializeAsync());
+			cashe = await dataManager.GetNewsDeserializeAsync();
+			if (News == null)
+				News = new ObservableCollection<NewsItem>(cashe);
+			else
+				AddingData(cashe);
+		}
+
+		private void AddingData(IEnumerable<NewsItem> collection)
+		{
+			News.Clear();
+			foreach (var item in collection)
+				News.Add(item);
 		}
 		#endregion
 
 		#region Write/Read a data on the disk
 		private async Task WriteDataAsync()
         {
-            var dcs = new DataContractSerializer(typeof(List<NewsItem>));
-
-            using (var stream = await ApplicationData.Current.LocalFolder.OpenStreamForWriteAsync("news.dat", CreationCollisionOption.ReplaceExisting))
-            {
-                dcs.WriteObject(stream, News);
-            }
+			await locDataManager.WriteDataAsync(News.ToList());
         }
-
+	
         private async Task<ObservableCollection<NewsItem>> ReadDataAsync()
         {
-            
-            var myStream = await ApplicationData.Current.LocalFolder.OpenStreamForReadAsync("news.dat");
-            DataContractSerializer dcs = new DataContractSerializer(typeof(List<NewsItem>));
-
-           return new ObservableCollection<NewsItem>((IEnumerable<NewsItem>)dcs.ReadObject(myStream));
-        }
+			var result = await locDataManager.ReadDataAsync();
+			cashe = (IEnumerable<NewsItem>)result.ToArray().Clone();
+			return result;
+		}
 		#endregion
 	}
 }

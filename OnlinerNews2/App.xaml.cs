@@ -19,6 +19,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
+using OnlinerNews2.Infrastructure;
 
 // The Blank Application template is documented at http://go.microsoft.com/fwlink/?LinkId=391641
 
@@ -45,6 +46,7 @@ namespace OnlinerServices
             container.PerRequest<DetailViewModel>();
 
             container.Singleton<IDataManager, DataManagerOnlinerTech>();
+			container.Singleton<IWriteReadData, LocalDataManager>();
 
             MessageBinder.SpecialValues.Add("$clickeditem", c => ((ItemClickEventArgs)c.EventArgs).ClickedItem);
 
