@@ -34,7 +34,32 @@
            >
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel  Orientation="Horizontal">
+                    <!--<Grid>
+                        <TextBlock 
+                             Style="{StaticResource MyTextBlockStyle}"
+                             Text="{Binding Date}"
+                             TextWrapping="Wrap"
+                             FontSize="20"
+                             Margin="10"
+                             Width="302"
+                             IsTapEnabled="True"
+                             HorizontalAlignment="Right"  
+                             />
+                        <Image Source="{Binding ImagePath}"  />
+                        <TextBlock 
+                             Style="{StaticResource MyTextBlockStyle}"
+                             Text="{Binding Title}"
+                             TextWrapping="Wrap"
+                             FontSize="20"
+                             Margin="10"
+                             Width="302"
+                             IsTapEnabled="True"
+                             VerticalAlignment="Bottom"
+                             Foreground="#FFD9E685"  
+                             />
+                    </Grid>-->
+                    <!--<StackPanel  Orientation="Horizontal">
+
                         <Image Source="{Binding ImagePath}" Width="100" Height="100" />
                         <TextBlock 
                              Style="{StaticResource MyTextBlockStyle}"
@@ -42,7 +67,29 @@
                              FontSize="20"
                              Margin="10"
                              Width="302"
-                             IsTapEnabled="True"  
+                             IsTapEnabled="True" Canvas.ZIndex="1"  
+                             />
+                    </StackPanel>-->
+                    <StackPanel  Orientation="Vertical">
+                        <TextBlock 
+                             Style="{StaticResource MyTextBlockStyle}"
+                             Text="{Binding Title}"
+                             TextWrapping="Wrap"
+                             FontSize="18"
+                             IsTapEnabled="True" 
+                             HorizontalAlignment="Left"  
+                             />
+                        <Image 
+                            Source="{Binding ImagePath}"
+                             />
+                        <TextBlock 
+                             Style="{StaticResource MyTextBlockStyle}"
+                             Text="{Binding Date}"
+                             TextWrapping="Wrap"
+                             FontSize="12"
+                             Width="302"
+                             IsTapEnabled="True"
+                             HorizontalAlignment="Right"  
                              />
                     </StackPanel>
                 </DataTemplate>
