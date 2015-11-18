@@ -24,7 +24,7 @@ namespace OnlinerServices.ViewModels
 		private IEnumerable<NewsItem> cashe;
 		private string textSearch;
 		private bool refresh = true;
-		private int progress;
+		private int progress = 1;
 
 		public MainViewModel(INavigationService navigationService, IDataManager dataManager, IWriteReadData localManager)
         {
@@ -64,7 +64,7 @@ namespace OnlinerServices.ViewModels
 			}
 		}
 
-		private bool Refresh
+		private bool RefreshPage
 		{
 			set
 			{

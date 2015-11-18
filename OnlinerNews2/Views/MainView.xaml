@@ -24,116 +24,69 @@
     </Page.BottomAppBar>
 
     <Grid>
-        <ListView
-           FontSize="26"
-           ItemsSource="{Binding News}"
-           SelectionMode="Single" 
-           Margin="0,74,0,22"
-           IsItemClickEnabled="True"
-           micro:Message.Attach="[Event ItemClick] = [Action GoToDetail($clickeditem)]"
-           >
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <!--<Grid>
-                        <TextBlock 
-                             Style="{StaticResource MyTextBlockStyle}"
-                             Text="{Binding Date}"
-                             TextWrapping="Wrap"
-                             FontSize="20"
-                             Margin="10"
-                             Width="302"
-                             IsTapEnabled="True"
-                             HorizontalAlignment="Right"  
+        <ScrollViewer>
+            <StackPanel Orientation="Vertical">
+                <Border
+                    BorderBrush="Yellow"
+                    BorderThickness="4"
+                    VerticalAlignment="Top"
+                    Margin="10"
+                 >
+                    <StackPanel Margin="10" Orientation="Vertical" HorizontalAlignment="Center" >
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock
+            		            x:Name="NameOfSection"
+            		            Style="{StaticResource MyTextBlockStyle}"
+            		            Margin="10"
+            		            Text="TechNews"
                              />
-                        <Image Source="{Binding ImagePath}"  />
-                        <TextBlock 
-                             Style="{StaticResource MyTextBlockStyle}"
-                             Text="{Binding Title}"
-                             TextWrapping="Wrap"
-                             FontSize="20"
-                             Margin="10"
-                             Width="302"
-                             IsTapEnabled="True"
-                             VerticalAlignment="Bottom"
-                             Foreground="#FFD9E685"  
+                            <TextBox
+                	            x:Name="TextSearch"
+                	            PlaceholderText="Search" 
+                   	            Margin="10" Width="168"
                              />
-                    </Grid>-->
-                    <!--<StackPanel  Orientation="Horizontal">
+                         </StackPanel>
+                         <TextBlock 
+            		        Text="{Binding News.Count, Converter={StaticResource CountNewsToStringConverter}}"
+            		        Style="{StaticResource MyTextBlockStyle}"
+            		        FontSize="15"
+            		        HorizontalAlignment="Center"
+                         />
+                      </StackPanel>
+                </Border>
 
-                        <Image Source="{Binding ImagePath}" Width="100" Height="100" />
-                        <TextBlock 
-                             Style="{StaticResource MyTextBlockStyle}"
-                             Text="{Binding Title}"
-                             FontSize="20"
-                             Margin="10"
-                             Width="302"
-                             IsTapEnabled="True" Canvas.ZIndex="1"  
-                             />
-                    </StackPanel>-->
-                    <StackPanel  Orientation="Vertical">
-                        <TextBlock 
-                             Style="{StaticResource MyTextBlockStyle}"
-                             Text="{Binding Title}"
-                             TextWrapping="Wrap"
-                             FontSize="18"
-                             IsTapEnabled="True" 
-                             HorizontalAlignment="Left"  
-                             />
-                        <Image 
-                            Source="{Binding ImagePath}"
-                             />
-                        <TextBlock 
-                             Style="{StaticResource MyTextBlockStyle}"
-                             Text="{Binding Date}"
-                             TextWrapping="Wrap"
-                             FontSize="12"
-                             Width="302"
-                             IsTapEnabled="True"
-                             HorizontalAlignment="Right"  
-                             />
-                    </StackPanel>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
-        <TextBlock
-             x:Name="NameOfSection"
-             Style="{StaticResource MyTextBlockStyle}"
-             Margin="10,10,0,0"
-             Text="TechNews"
-             Height="29"
-             Width="142"
-             />
-        <TextBox
-            x:Name="TextSearch"
-            PlaceholderText="Search" 
-            HorizontalAlignment="Left"
-            Margin="206,14,0,0"
-            TextWrapping="Wrap" 
-            VerticalAlignment="Top" 
-            Height="29"
-            Width="166"
-            />
-        <TextBlock 
-            Text="{Binding News.Count, Converter={StaticResource CountNewsToStringConverter}}"
-            Style="{StaticResource MyTextBlockStyle}"
-            FontSize="15"
-            Margin="10,53,0,0" 
-            VerticalAlignment="Top"
-            Width="362"
-            Height="16"
-            />
+                <ListView 
+                    FontSize="26"
+                    ItemsSource="{Binding News}"
+                    SelectionMode="Single" 
+                    IsItemClickEnabled="True"
+                    micro:Message.Attach="[Event ItemClick] = [Action GoToDetail($clickeditem)]" 
+                >
+                   <ListView.ItemTemplate>
+                        <DataTemplate>
+                              <StackPanel Margin="20"  Orientation="Vertical" >
+                                   <TextBlock 
+                                         Style="{StaticResource MyTextBlockStyle}"
+                                         Text="{Binding Title}"
+                                         FontSize="18"
+                                    />
+                                    <Image Source="{Binding ImagePath}" />
+                                    <TextBlock 
+                                         Style="{StaticResource MyTextBlockStyle}"
+                                         Text="{Binding Date}"
+                                         FontSize="12"
+                                    />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackPanel>
+        </ScrollViewer>
         <ProgressBar
              x:Name="ProgressBar"
-             HorizontalAlignment="Left"
              Height="18"
-             Margin="3,562,0,0"
-             VerticalAlignment="Top"
-             Width="396"
+             VerticalAlignment="Bottom"
              RenderTransformOrigin="0.5,0.5"
-             >
-            <ProgressBar.RenderTransform>
-                <CompositeTransform ScaleY="-1"/>
-            </ProgressBar.RenderTransform>
-        </ProgressBar>
+         />
     </Grid>
 </Page>
