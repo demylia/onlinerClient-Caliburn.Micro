@@ -24,7 +24,8 @@ namespace OnlinerServices
 
         private string adress = "http://tech.onliner.by/feed";
 
-        public async Task<IEnumerable<NewsItem>> GetNewsDeserializeAsync()
+
+        public async Task<IEnumerable<NewsItem>> GetNewsDeserializeAsync(string adress)
         {
     
             var feed = await GetOnlinerRSSAsync(adress);

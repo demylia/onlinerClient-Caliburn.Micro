@@ -21,12 +21,13 @@ namespace OnlinerServices.ViewModels
         private IDataManager dataManager;
 		private IWriteReadData locDataManager;
 		private ObservableCollection<NewsItem> news;
-		private IEnumerable<NewsItem> cashe;
+        private ObservableCollection<NewsItem> peopleNews;
+        private IEnumerable<NewsItem> cashe;
 		private string textSearch;
 		private bool refresh = true;
-		private int progress = 1;
+        private bool progress = true;
 
-		public MainViewModel(INavigationService navigationService, IDataManager dataManager, IWriteReadData localManager)
+        public MainViewModel(INavigationService navigationService, IDataManager dataManager, IWriteReadData localManager)
         {
             this.dataManager = dataManager;
             this.navigationService = navigationService;
@@ -44,6 +45,16 @@ namespace OnlinerServices.ViewModels
 			}
         }
 
+        public ObservableCollection<NewsItem> PeopleNews
+        {
+            get { return peopleNews; }
+            set
+            {
+                peopleNews = value;
+                NotifyOfPropertyChange(() => PeopleNews);
+            }
+        }
+
 		public string TextSearch
         {
             get { return textSearch; }
@@ -54,7 +65,7 @@ namespace OnlinerServices.ViewModels
             }
         }
 
-		public int ProgressBar
+		public bool ProgressBar
 		{
 			get { return progress; }
 			set
@@ -66,6 +77,7 @@ namespace OnlinerServices.ViewModels
 
 		private bool RefreshPage
 		{
+            get { return refresh; }
 			set
 			{
 				refresh = value;
@@ -84,20 +96,21 @@ namespace OnlinerServices.ViewModels
 		#region Displaying and searching of the news
 		protected override async void OnActivate()
 		{
-			
-			News = await ReadDataAsync();
+            PeopleNews = await ReadDataAsync();
+            News = await ReadDataAsync();
 			if (News.Count == 0)
 				RefreshNews();
+            ProgressBar = !ProgressBar;
 		}
 
         public  void Search()
         {
 			if (string.IsNullOrEmpty(TextSearch))
-				AddingData(cashe);
+                AddingDataFromCasheToCollection(cashe,News);
 			else
 			{
 				var res = cashe.Where(s => s.Title.IndexOf(TextSearch, StringComparison.OrdinalIgnoreCase) >= 0);
-				AddingData(res);
+                AddingDataFromCasheToCollection(res,News);
 			}
         }
 		public bool CanRefreshNews
@@ -106,27 +119,30 @@ namespace OnlinerServices.ViewModels
 		}
         public async void RefreshNews()
         {
-			Refresh = false;
-            await GetNews();
-			await WriteDataAsync();
-			Refresh = true;
-		}
+            ProgressBar = !ProgressBar;
+            RefreshPage = !RefreshPage;
+            await GetNews(News,"http://tech.onliner.by/feed");
+            await GetNews(PeopleNews, "http://people.onliner.by/feed");
+            await WriteDataAsync();
+            RefreshPage = !RefreshPage;
+            ProgressBar = !ProgressBar;
+        }
 
-		private async Task GetNews()
+		private  async Task GetNews(ObservableCollection<NewsItem> collection,string adress)
 		{
-
-			cashe = await dataManager.GetNewsDeserializeAsync();
-			if (News == null)
-				News = new ObservableCollection<NewsItem>(cashe);
+           // string adress = "http://tech.onliner.by/feed";
+            cashe = await dataManager.GetNewsDeserializeAsync(adress);
+			if (collection == null)
+                collection = new ObservableCollection<NewsItem>(cashe);
 			else
-				AddingData(cashe);
+                AddingDataFromCasheToCollection(cashe,collection);
 		}
 
-		private void AddingData(IEnumerable<NewsItem> collection)
+		private void AddingDataFromCasheToCollection(IEnumerable<NewsItem> cashe, ObservableCollection<NewsItem> collection)
 		{
-			News.Clear();
-			foreach (var item in collection)
-				News.Add(item);
+			collection.Clear();
+			foreach (var item in cashe)
+				collection.Add(item);
 		}
 		#endregion
 

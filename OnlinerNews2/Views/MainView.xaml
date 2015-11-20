@@ -10,8 +10,111 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Margin="0,0,-3.0517578125E-05,0">
+   
     <Page.Resources>
         <valueconverter:CountNewsToStringConverter x:Key="CountNewsToStringConverter" />
+        <valueconverter:ProgressBarOnOffConverter x:Key="ProgressBar" />
+        <Style TargetType="ListView" x:Key="ListViewStyleSectionNews">
+            <Setter Property="ItemsSource" Value="{Binding News}" />
+        </Style>
+        <DataTemplate x:Key="ListViewTemplate">
+            <StackPanel  Margin="20"  Orientation="Vertical" >
+                <TextBlock 
+                                         Style="{StaticResource MyTextBlockStyle}"
+                                         Text="{Binding Title}"
+                                         FontSize="18"
+                                    />
+                <Image Source="{Binding ImagePath}" />
+                <TextBlock 
+                                         Style="{StaticResource MyTextBlockStyle}"
+                                         Text="{Binding Date}"
+                                         FontSize="12"
+                                    />
+            </StackPanel>
+        </DataTemplate>
+        <DataTemplate x:Key="StackPanelTemplate">
+           
+               
+                    <StackPanel Orientation="Vertical">
+                        <Border 
+                            BorderBrush="Yellow"
+                            BorderThickness="4"
+                            VerticalAlignment="Top"
+                             Margin="10"
+                         >
+                            <StackPanel Margin="10" Orientation="Vertical" HorizontalAlignment="Center" >
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock
+            		            x:Name="NameOfSection"
+            		            Style="{StaticResource MyTextBlockStyle}"
+            		            Margin="10"
+            		            Text="TechNews"
+                             />
+                                    <TextBox
+                	            x:Name="TextSearch"
+                	            PlaceholderText="Search" 
+                   	            Margin="10" Width="168"
+                             />
+                                </StackPanel>
+                                <TextBlock 
+            		        Text="{Binding News.Count, Converter={StaticResource CountNewsToStringConverter}}"
+            		        Style="{StaticResource MyTextBlockStyle}"
+            		        FontSize="15"
+            		        HorizontalAlignment="Center"
+                         />
+                            </StackPanel>
+                        </Border>
+
+                        <!--<ListView ItemTemplate="{StaticResource ListViewTemplate}"
+                             FontSize="26"
+                             Style="{StaticResource ListViewStyleSectionNews}"
+                             SelectionMode="Single" 
+                             IsItemClickEnabled="True"
+                             micro:Message.Attach="[Event ItemClick] = [Action GoToDetail($clickeditem)]" 
+                        />-->
+                    </StackPanel> 
+ 
+        </DataTemplate>
+   
+        <DataTemplate x:Key="HubSection_1_Template">
+
+            <ScrollViewer >
+                <StackPanel>
+                    <TextBox
+                    Text="{Binding TextSearch}"
+                	           
+                	            PlaceholderText="Search" 
+                   	            Margin="10" Width="168"
+                             />
+                    <ContentControl ContentTemplate="{StaticResource StackPanelTemplate}"></ContentControl>
+               <ListView ItemTemplate="{StaticResource ListViewTemplate}"
+                    FontSize="26"
+                    ItemsSource="{Binding News}"
+                    
+                    SelectionMode="Single" 
+                    IsItemClickEnabled="True"
+                    micro:Message.Attach="[Event ItemClick] = [Action GoToDetail($clickeditem)]" 
+                />
+</StackPanel>
+            </ScrollViewer>
+            
+        </DataTemplate>
+        <DataTemplate x:Key="HubSection_2_Template">
+
+            <ScrollViewer >
+                <StackPanel>
+                    <ContentControl ContentTemplate="{StaticResource StackPanelTemplate}"></ContentControl>
+                    <ListView ItemTemplate="{StaticResource ListViewTemplate}"
+                    FontSize="26"
+                    ItemsSource="{Binding PeopleNews}"
+                    
+                    SelectionMode="Single" 
+                    IsItemClickEnabled="True"
+                    micro:Message.Attach="[Event ItemClick] = [Action GoToDetail($clickeditem)]" 
+                />
+                </StackPanel>
+            </ScrollViewer>
+        </DataTemplate>
     </Page.Resources>
 
     <Page.BottomAppBar>
@@ -24,69 +127,25 @@
     </Page.BottomAppBar>
 
     <Grid>
-        <ScrollViewer>
-            <StackPanel Orientation="Vertical">
-                <Border
-                    BorderBrush="Yellow"
-                    BorderThickness="4"
-                    VerticalAlignment="Top"
-                    Margin="10"
-                 >
-                    <StackPanel Margin="10" Orientation="Vertical" HorizontalAlignment="Center" >
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock
-            		            x:Name="NameOfSection"
-            		            Style="{StaticResource MyTextBlockStyle}"
-            		            Margin="10"
-            		            Text="TechNews"
-                             />
-                            <TextBox
-                	            x:Name="TextSearch"
-                	            PlaceholderText="Search" 
-                   	            Margin="10" Width="168"
-                             />
-                         </StackPanel>
-                         <TextBlock 
-            		        Text="{Binding News.Count, Converter={StaticResource CountNewsToStringConverter}}"
-            		        Style="{StaticResource MyTextBlockStyle}"
-            		        FontSize="15"
-            		        HorizontalAlignment="Center"
-                         />
-                      </StackPanel>
-                </Border>
-
-                <ListView 
-                    FontSize="26"
-                    ItemsSource="{Binding News}"
-                    SelectionMode="Single" 
-                    IsItemClickEnabled="True"
-                    micro:Message.Attach="[Event ItemClick] = [Action GoToDetail($clickeditem)]" 
-                >
-                   <ListView.ItemTemplate>
-                        <DataTemplate>
-                              <StackPanel Margin="20"  Orientation="Vertical" >
-                                   <TextBlock 
-                                         Style="{StaticResource MyTextBlockStyle}"
-                                         Text="{Binding Title}"
-                                         FontSize="18"
-                                    />
-                                    <Image Source="{Binding ImagePath}" />
-                                    <TextBlock 
-                                         Style="{StaticResource MyTextBlockStyle}"
-                                         Text="{Binding Date}"
-                                         FontSize="12"
-                                    />
-                            </StackPanel>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-            </StackPanel>
-        </ScrollViewer>
+        <Hub x:Name="Hub" x:Uid="Hub">
+            <HubSection x:Uid="HubSection1" Header="SECTION 1"  
+            ContentTemplate="{StaticResource HubSection_1_Template}"           
+             >
+                <!--секция 1-->
+            </HubSection>
+            <HubSection x:Uid="HubSection2" Header="SECTION 2" 
+                ContentTemplate="{StaticResource HubSection_2_Template}"
+            >
+                <!--секция 2-->
+            </HubSection>
+        </Hub>
+       
         <ProgressBar
              x:Name="ProgressBar"
              Height="18"
              VerticalAlignment="Bottom"
-             RenderTransformOrigin="0.5,0.5"
-         />
+             RenderTransformOrigin="0.5,0.5" 
+             IsIndeterminate="{Binding ProgressBar,Converter={StaticResource ProgressBar}}"
+         /><!--IsIndeterminate="{Binding ProgressBar,Converter={StaticResource ProgressBar}}"-->
     </Grid>
 </Page>
