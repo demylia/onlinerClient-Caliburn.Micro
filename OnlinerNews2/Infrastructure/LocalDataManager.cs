@@ -13,23 +13,23 @@ namespace OnlinerNews2.Infrastructure
 {
 	public class LocalDataManager: IWriteReadData
 	{
-		private const string file = "news.dat";
+		//private const string file = "news.dat";
 
-		public async Task WriteDataAsync(List<NewsItem> data)
+		public async Task WriteDataAsync(ObservableCollection<NewsItem> data, string fileName)
 		{
 			var dcs = new DataContractSerializer(typeof(List<NewsItem>));
-
-			using (var stream = await ApplicationData.Current.LocalFolder.OpenStreamForWriteAsync(file, CreationCollisionOption.ReplaceExisting))
+            
+            using (var stream = await ApplicationData.Current.LocalFolder.OpenStreamForWriteAsync(fileName, CreationCollisionOption.ReplaceExisting))
 			{
 				dcs.WriteObject(stream, data);
 			}
 		}
 
-		public async Task<ObservableCollection<NewsItem>> ReadDataAsync()
+		public async Task<ObservableCollection<NewsItem>> ReadDataAsync(string fileName)
 		{
 			try
 			{
-				var stream = await ApplicationData.Current.LocalFolder.OpenStreamForReadAsync(file);
+				var stream = await ApplicationData.Current.LocalFolder.OpenStreamForReadAsync(fileName);
 				DataContractSerializer dcs = new DataContractSerializer(typeof(List<NewsItem>));
 
 				return new ObservableCollection<NewsItem>((IEnumerable<NewsItem>)dcs.ReadObject(stream));

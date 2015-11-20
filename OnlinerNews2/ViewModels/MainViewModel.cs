@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading;
@@ -26,6 +27,9 @@ namespace OnlinerServices.ViewModels
 		private string textSearch;
 		private bool refresh = true;
         private bool progress = true;
+
+        const string techNewsFile = "TechNews",
+                     peopleNewsFile = "PeopleNews";
 
         public MainViewModel(INavigationService navigationService, IDataManager dataManager, IWriteReadData localManager)
         {
@@ -96,8 +100,8 @@ namespace OnlinerServices.ViewModels
 		#region Displaying and searching of the news
 		protected override async void OnActivate()
 		{
-            PeopleNews = await ReadDataAsync();
-            News = await ReadDataAsync();
+            PeopleNews = await ReadDataAsync(peopleNewsFile);
+            News = await ReadDataAsync(techNewsFile);
 			if (News.Count == 0)
 				RefreshNews();
             ProgressBar = !ProgressBar;
@@ -123,7 +127,8 @@ namespace OnlinerServices.ViewModels
             RefreshPage = !RefreshPage;
             await GetNews(News,"http://tech.onliner.by/feed");
             await GetNews(PeopleNews, "http://people.onliner.by/feed");
-            await WriteDataAsync();
+            await WriteDataAsync(News,techNewsFile);
+            await WriteDataAsync(PeopleNews,peopleNewsFile);
             RefreshPage = !RefreshPage;
             ProgressBar = !ProgressBar;
         }
@@ -131,7 +136,7 @@ namespace OnlinerServices.ViewModels
 		private  async Task GetNews(ObservableCollection<NewsItem> collection,string adress)
 		{
            // string adress = "http://tech.onliner.by/feed";
-            cashe = await dataManager.GetNewsDeserializeAsync(adress);
+            await Task.Run( async() => cashe = await dataManager.GetNewsDeserializeAsync(adress));
 			if (collection == null)
                 collection = new ObservableCollection<NewsItem>(cashe);
 			else
@@ -147,14 +152,15 @@ namespace OnlinerServices.ViewModels
 		#endregion
 
 		#region Write/Read a data on the disk
-		private async Task WriteDataAsync()
+		private async Task WriteDataAsync(ObservableCollection<NewsItem> collection, string fileName)
         {
-			await locDataManager.WriteDataAsync(News.ToList());
+    		await locDataManager.WriteDataAsync(collection, fileName);
         }
 	
-        private async Task<ObservableCollection<NewsItem>> ReadDataAsync()
+        private async Task<ObservableCollection<NewsItem>> ReadDataAsync(string fileName)
         {
-			var result = await locDataManager.ReadDataAsync();
+            
+			var result = await locDataManager.ReadDataAsync(fileName);
 			cashe = (IEnumerable<NewsItem>)result.ToArray().Clone();
 			return result;
 		}

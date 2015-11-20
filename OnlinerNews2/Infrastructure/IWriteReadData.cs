@@ -10,7 +10,7 @@ namespace OnlinerNews2.Infrastructure
 {
 	public interface IWriteReadData
 	{
-		Task WriteDataAsync(List<NewsItem> data);
-		Task<ObservableCollection<NewsItem>> ReadDataAsync();
+		Task WriteDataAsync(ObservableCollection<NewsItem> data, string fileName);
+		Task<ObservableCollection<NewsItem>> ReadDataAsync(string fileName);
     }
 }
