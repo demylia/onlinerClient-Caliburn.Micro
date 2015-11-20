@@ -62,7 +62,7 @@ namespace OnlinerServices.ViewModels
 			News = await ReadDataAsync();
 			if (News == null)
 			{
-				GetNews();
+				await GetNews();
 				await WriteDataAsync();
 			}
 		}
@@ -82,13 +82,13 @@ namespace OnlinerServices.ViewModels
 
         public async void RefreshNews()
         {
-            GetNews();
+            await GetNews();
 			await WriteDataAsync();
 		}
 
-		private async void GetNews()
+		private async Task GetNews()
 		{
-			News = new ObservableCollection<NewsItem>(await dataManager.GetNewsDeserializeAsync());
+            await Task.Run(async () => News = new ObservableCollection<NewsItem>(await dataManager.GetNewsDeserializeAsync()));
 		}
 		#endregion
 
