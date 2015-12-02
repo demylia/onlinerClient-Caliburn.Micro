@@ -13,31 +13,40 @@ namespace OnlinerNews2.Infrastructure
 {
 	public class LocalDataManager: IWriteReadData
 	{
-		//private const string file = "news.dat";
-
-		public async Task WriteDataAsync(ObservableCollection<NewsItem> data, string fileName)
+       
+        public async Task WriteDataAsync(ObservableCollection<NewsItem> data, FileNames fileName)
 		{
-			var dcs = new DataContractSerializer(typeof(List<NewsItem>));
             
-            using (var stream = await ApplicationData.Current.LocalFolder.OpenStreamForWriteAsync(fileName, CreationCollisionOption.ReplaceExisting))
-			{
-				dcs.WriteObject(stream, data);
-			}
+			var dcs = new DataContractSerializer(typeof(List<NewsItem>));
+            try
+            {
+                using (var stream = await ApplicationData.Current.LocalFolder.OpenStreamForWriteAsync(fileName.ToString(), CreationCollisionOption.ReplaceExisting))
+                {
+                    dcs.WriteObject(stream, data);
+                }
+            }
+            catch (Exception)
+            {
+
+              //  throw;
+            }
+           
 		}
 
-		public async Task<ObservableCollection<NewsItem>> ReadDataAsync(string fileName)
+		public async Task<ObservableCollection<NewsItem>> ReadDataAsync(FileNames fileName)
 		{
 			try
 			{
-				var stream = await ApplicationData.Current.LocalFolder.OpenStreamForReadAsync(fileName);
+				var stream = await ApplicationData.Current.LocalFolder.OpenStreamForReadAsync(fileName.ToString());
 				DataContractSerializer dcs = new DataContractSerializer(typeof(List<NewsItem>));
 
 				return new ObservableCollection<NewsItem>((IEnumerable<NewsItem>)dcs.ReadObject(stream));
 			}
-			catch (FileNotFoundException)
+			catch (Exception ex)
 			{
-				return new ObservableCollection<NewsItem>();
-			}
+                return new ObservableCollection<NewsItem>();
+                //throw ex;// Value null
+            }
 
 		}
 	}

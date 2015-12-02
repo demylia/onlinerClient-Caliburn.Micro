@@ -8,9 +8,15 @@ using System.Threading.Tasks;
 
 namespace OnlinerNews2.Infrastructure
 {
+
 	public interface IWriteReadData
 	{
-		Task WriteDataAsync(ObservableCollection<NewsItem> data, string fileName);
-		Task<ObservableCollection<NewsItem>> ReadDataAsync(string fileName);
+		Task WriteDataAsync(ObservableCollection<NewsItem> data, FileNames fileName);
+		Task<ObservableCollection<NewsItem>> ReadDataAsync(FileNames fileName);
+    }
+    public enum FileNames
+    {
+        TechNews4,
+        PeopleNews2
     }
 }
